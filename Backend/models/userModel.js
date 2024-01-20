@@ -29,6 +29,9 @@ userSchema.pre("save", async function (next) {
   try {
     const hashedPassword = await createHashedPassword(user);
     user.password = hashedPassword;
+    if (user.email === process.env.EMAIL) {
+      user.role = "Admin";
+    }
     next();
   } catch (error) {
     console.log("error in hashing password", error);

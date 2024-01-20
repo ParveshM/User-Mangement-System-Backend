@@ -1,12 +1,7 @@
 const express = require("express");
 const Router = express();
 const userController = require("../controllers/userController");
-const jwt = require("jsonwebtoken");
-const {
-  generateAccessToken,
-  generateRefreshToken,
-} = require("../utils/generateAccessTokens");
-const verifyUser = require("../middlewares/authMiddleware");
+const { verifyUser } = require("../middlewares/authMiddleware");
 
 Router.post("/signup", userController.signupUser);
 Router.post("/login", userController.login);
@@ -18,11 +13,6 @@ Router.post("/login", userController.login);
 // };
 
 // let refreshTokens = [];
-
-// Router.get("/", (req, res) => {
-//   res.send("Welcome from server");
-//   console.log("received token");
-// });
 
 // Router.post("/refresh", (req, res) => {
 //   const refreshToken = req.body.token;
@@ -79,4 +69,4 @@ Router.post("/login", userController.login);
 //   res.status(200).json("logout succesfull");
 // });
 
-module.exports = Router;
+// module.exports = Router;

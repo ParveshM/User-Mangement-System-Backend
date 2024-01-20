@@ -16,7 +16,7 @@ const signupUser = async (req, res) => {
     }
     const createdUser = await User.create(req.body);
     if (createdUser) {
-      return res.status(200).json("User registertion success");
+      return res.status(200).json("User registration success");
     }
   } catch (error) {
     return res.status(500).json("Something went wrong");
@@ -36,6 +36,13 @@ const login = async (req, res) => {
     const accesToken = generateAccessToken(getUser);
     const refreshToken = generateRefreshToken(getUser);
     await User.findByIdAndUpdate({ _id: getUser._id }, { refreshToken });
+    res
+      .cookie("accessToken", accesToken, {
+        httpOnly: true,
+      })
+      .cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+      });
     return res
       .status(200)
       .json({ message: "User loggedIn success", accesToken, refreshToken });
@@ -46,4 +53,24 @@ const login = async (req, res) => {
 
 const logout = (req, res) => {};
 
-module.exports = { signupUser, login, logout };
+const refreshToken = (req, res) => {
+  const { refreshToken } = req.cookies;
+  if (!refreshToken) {
+    return res.status(401).json("you are not authenticated");
+  }
+
+  jwt.verify(refreshToken, process.env.RefreshTokenSecret, (err, user) => {
+    err && console.log("Error", err);
+
+    const newAccessToken = generateAccessToken(user);
+    const newRefreshToken = generateRefreshToken(user);
+    refreshTokens.push(newRefreshToken);
+
+    res.status(200).json({
+      accesToken: newAccessToken,
+      refreshToken: newRefreshToken,
+    });
+  });
+};
+
+module.exports = { signupUser, login, logout, refreshToken };
