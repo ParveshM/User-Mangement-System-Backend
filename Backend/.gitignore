@@ -1,4 +1,2 @@
 node_modules
 .env
-router.js
-generateAccessTokens.js
