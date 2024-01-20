@@ -9,7 +9,7 @@ router.post("/signup", userController.signupUser);
 // user login
 router.post("/login", userController.login);
 // user Logout
-router.post("/logout", userController.logout);
+router.post("/logout", verifyUser, userController.logout);
 
 // Refresh token
 router.get("/refresh_token", verifyUser, userController.refreshToken);

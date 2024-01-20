@@ -98,10 +98,13 @@ const refreshToken = (req, res) => {
 
       const newAccessToken = generateAccessToken(user);
       const newRefreshToken = generateRefreshToken(user);
-      res.status(200).json({
-        accesToken: newAccessToken,
-        refreshToken: newRefreshToken,
-      });
+      res
+        .cookie("accessToken", newAccessToken, {
+          httpOnly: true,
+        })
+        .cookie("refreshToken", newRefreshToken, {
+          httpOnly: true,
+        });
       return res
         .status(200)
         .json({ success: true, message: "Refresh token stored successfully" });

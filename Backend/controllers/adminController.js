@@ -1,39 +1,5 @@
 const User = require("../models/userModel");
 
-// /*
-//  * Post: admin Login
-//  */
-// const adminLogin = async (req, res) => {
-//   try {
-//     const { email, password } = req.body;
-//     const getAdminUser = await User.findOne({ email: email });
-//     if (getAdminUser) {
-//       const isPasswordMatching = compareHashedPassword(password, getAdminUser);
-//       if (isPasswordMatching && getAdminUser.role === "Admin") {
-//         const accesToken = generateAccessToken(getAdminUser);
-//         const refreshToken = generateRefreshToken(getAdminUser);
-
-//         await User.findByIdAndUpdate(
-//           { _id: getAdminUser._id },
-//           { refreshToken }
-//         );
-//         res.cookie("accessToken", accesToken, { httpOnly: true });
-//         return res.status(200).json({
-//           message: "Admin logged in successfully",
-//           accesToken,
-//           refreshToken,
-//         });
-//       }
-//     }
-//   } catch (error) {
-//     console.log("error", error);
-//   }
-// };
-// /*
-//  * Get : admin Logout
-//  */
-// const adminLogout = async (req, res) => {};
-
 /*
  * Get : All users list from db
  */
