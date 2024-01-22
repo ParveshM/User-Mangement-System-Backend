@@ -6,7 +6,7 @@ import showToast from "../utils/toaster";
 import { validateLogin } from "../utils/validateLogin";
 import { BASE_URL } from "../constants";
 import { useNavigate, Link } from "react-router-dom";
-import { UseDispatch, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setUser } from "../redux/Slice";
 
 const LoginForm = () => {
@@ -16,8 +16,8 @@ const LoginForm = () => {
 
   const formik = useFormik({
     initialValues: {
-      email: "",
-      password: "",
+      email: "amal@gmail.com",
+      password: "Amal@123",
     },
     validate: validateLogin,
     onSubmit: (values) => {
@@ -28,10 +28,10 @@ const LoginForm = () => {
           const message = res.data.message;
           if (res.data.success) {
             showToast(message, "success");
-            dispatch(setUser(res.data.user));
-            setTimeout(() => {
-              navigate("/");
-            }, 1000);
+            dispatch(setUser(res.data));
+            // setTimeout(() => {
+            //   navigate("/");
+            // }, 1000);
           } else {
             setIsSubmitting(false);
             showToast(message, "error");
@@ -64,6 +64,7 @@ const LoginForm = () => {
                   type="email"
                   name="email"
                   id="email"
+                  value={formik.values.email}
                   placeholder="jhondoe@gmail.com"
                   className=" border-b-2 border-b-inputBorderColor text-gray-900 outline-none sm:text-sm  focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 "
                   onChange={formik.handleChange}
@@ -85,6 +86,7 @@ const LoginForm = () => {
                   name="password"
                   id="password"
                   placeholder="••••••••"
+                  value={formik.values.password}
                   className=" border-b-2 border-b-inputBorderColor text-gray-900 outline-none sm:text-sm  focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 "
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}

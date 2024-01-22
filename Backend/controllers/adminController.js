@@ -22,11 +22,11 @@ const addNewUser = async (req, res) => {
   try {
     const isUserExist = await User.findOne({ email });
     if (isUserExist) {
-      return res.status(403).json("User already exists in this email address");
+      return res.json("User already exists in this email address");
     }
     const createdUser = await User.create(req.body);
     if (createdUser) {
-      return res.status(200).json("User registration success");
+      return res.json("User registration success");
     }
   } catch (error) {
     return res.status(500).json("Something went wrong");
@@ -43,10 +43,11 @@ const updateUser = async (req, res) => {
     if (updateUserName) {
       return res.status(200).json(`User name updated successfully`);
     } else {
-      res.status(404).json("User not found");
+      res.json("User not found");
     }
   } catch (error) {
     console.log("error", error);
+    return res.status(500).json("Something went wrong");
   }
 };
 /*
@@ -57,12 +58,13 @@ const deleteUser = async (req, res) => {
     const userId = req.params.id;
     const deleteUser = await User.findByIdAndDelete(userId);
     if (deleteUser) {
-      return res.status(200).json("User Deleted successfully");
+      return res.json("User Deleted successfully");
     } else {
       res.status(404).json("Delete user failed");
     }
   } catch (error) {
     console.log("error", err);
+    return res.status(500).json("Something went wrong");
   }
 };
 module.exports = {
