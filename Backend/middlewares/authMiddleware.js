@@ -7,17 +7,13 @@ function verifyUser(req, res, next) {
     const token = authHeader.split(" ")[1];
     jwt.verify(token, process.env.AccessTokenSecret, (err, user) => {
       if (err) {
-        return res
-          .status(401)
-          .json({ success: false, message: "Token is not valid" });
+        return res.json({ success: false, message: "Token is not valid" });
       }
       req.user = user;
       next();
     });
   } else {
-    res
-      .status(401)
-      .json({ success: false, message: "You are not Authenticated" });
+    res.json({ success: false, message: "You are not Authenticated" });
   }
 }
 
@@ -28,25 +24,19 @@ const isAdminAuth = (req, res, next) => {
   if (accessToken) {
     jwt.verify(accessToken, process.env.AccessTokenSecret, (err, user) => {
       if (err) {
-        return res
-          .status(401)
-          .json({ success: false, message: "Token is not valid" });
+        return res.json({ success: false, message: "Token is not valid" });
       }
       if (user && user.role === "Admin") {
         next();
       } else {
-        return res
-          .status(403)
-          .json({
-            success: false,
-            message: "You are not allowed to access this router",
-          });
+        return res.json({
+          success: false,
+          message: "You are not allowed to access this router",
+        });
       }
     });
   } else {
-    res
-      .status(401)
-      .json({ success: false, message: "You are not Authenticated" });
+    res.json({ success: false, message: "You are not Authenticated" });
   }
 };
 

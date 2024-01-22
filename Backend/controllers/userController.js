@@ -10,12 +10,13 @@ const {
  * Post: User Signup
  */
 const signupUser = async (req, res) => {
+  console.log(req.body);
   try {
     const { email } = req.body;
 
     const isUserExist = await User.findOne({ email });
     if (isUserExist) {
-      return res.status(403).json({
+      return res.json({
         success: false,
         message: "User already exists in this email address",
       });
@@ -27,7 +28,7 @@ const signupUser = async (req, res) => {
         .json({ success: true, message: "User registration success" });
     }
   } catch (error) {
-    res.status(500).json({ success: false, message: "Server error" });
+    res.status(500).json({ error: "Server error" + error });
   }
 };
 
@@ -38,37 +39,26 @@ const login = async (req, res) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
-      return res
-        .status(401)
-        .json({ success: false, message: "All fields are required" });
+      return res.json({ success: false, message: "All fields are required" });
     }
     const getUser = await User.findOne({ email });
     if (getUser) {
       const isPasswordMatching = await compareHashedPassword(password, getUser);
       if (isPasswordMatching) {
-        const accesToken = generateAccessToken(getUser);
+        const accessToken = generateAccessToken(getUser);
         const refreshToken = generateRefreshToken(getUser);
         await User.findByIdAndUpdate({ _id: getUser._id }, { refreshToken });
-        res
-          .cookie("accessToken", accesToken, {
-            httpOnly: true,
-          })
-          .cookie("refreshToken", refreshToken, {
-            httpOnly: true,
-          });
         return res.status(200).json({
           success: true,
           message: "User loggedIn success",
-          accesToken,
+          accessToken,
           refreshToken,
         });
       } else {
-        return res
-          .status(401)
-          .json({ success: false, message: "Invalid credentials" });
+        return res.json({ success: false, message: "Invalid credentials" });
       }
     }
-    res.status(404).json({ success: false, message: "Invalid credentials" });
+    res.json({ success: false, message: "Invalid credentials" });
   } catch (error) {
     console.log("error", error);
     res.status(500).json({ success: false, message: "Server error" });
@@ -85,29 +75,24 @@ const logout = (req, res) => {
 /*
  * Post: create refresh token
  */
-const refreshToken = (req, res) => {
+const createRefreshToken = (req, res) => {
   try {
     const { refreshToken } = req.cookies;
     if (!refreshToken) {
-      return res
-        .status(401)
-        .json({ success: false, message: "you are not authenticated" });
+      return res.json({ success: false, message: "you are not authenticated" });
     }
     jwt.verify(refreshToken, process.env.RefreshTokenSecret, (err, user) => {
       err && console.log("Error", err);
 
       const newAccessToken = generateAccessToken(user);
       const newRefreshToken = generateRefreshToken(user);
-      res
-        .cookie("accessToken", newAccessToken, {
-          httpOnly: true,
-        })
-        .cookie("refreshToken", newRefreshToken, {
-          httpOnly: true,
-        });
-      return res
-        .status(200)
-        .json({ success: true, message: "Refresh token stored successfully" });
+
+      return res.status(200).json({
+        success: true,
+        message: "Refresh token stored successfully",
+        accessToken: newAccessToken,
+        refreshToken: newRefreshToken,
+      });
     });
   } catch (error) {
     console.log("error", error);
@@ -115,4 +100,26 @@ const refreshToken = (req, res) => {
   }
 };
 
-module.exports = { signupUser, login, logout, refreshToken };
+const getUserProfile = async (req, res) => {
+  const userId = req.params.id;
+  try {
+    const isUserHaveProfile = await User.findById(userId);
+    if (isUserHaveProfile) {
+      return res
+        .status(200)
+        .json({ success: true, user: isUserHaveProfile.user });
+    } else {
+      res.json({ success: false, message: "No user profile found" });
+    }
+  } catch (error) {
+    res.status(404).json({ error: "server error" });
+  }
+};
+
+module.exports = {
+  signupUser,
+  login,
+  logout,
+  createRefreshToken,
+  getUserProfile,
+};

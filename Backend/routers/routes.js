@@ -10,9 +10,13 @@ router.post("/signup", userController.signupUser);
 router.post("/login", userController.login);
 // user Logout
 router.post("/logout", verifyUser, userController.logout);
+// get user profile details
+router.post("/user_profile/:id", verifyUser, userController.getUserProfile);
 
-// Refresh token
-router.get("/refresh_token", verifyUser, userController.refreshToken);
+/*
+ * Refresh token
+ */
+router.get("/refresh_token", verifyUser, userController.createRefreshToken);
 
 /*
  * admin user management routes
