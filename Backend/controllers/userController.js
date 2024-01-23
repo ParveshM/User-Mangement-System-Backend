@@ -49,7 +49,7 @@ const login = async (req, res) => {
         const refreshToken = generateRefreshToken(getUser);
         return res.status(200).json({
           success: true,
-          message: "User loggedIn success",
+          message: "User loggedIn ",
           accessToken,
           refreshToken,
         });

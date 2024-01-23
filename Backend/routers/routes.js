@@ -28,6 +28,8 @@ router.get("/refresh_token", verifyUser, userController.createRefreshToken);
 /*
  * admin user management routes
  */
+
+router.post("/admin/login", adminController.adminLogin);
 router.get("/get_users", verifyUser, isAdminAuth, adminController.getAllUsers);
 // admin addin new user
 router.post("/add_user", verifyUser, isAdminAuth, adminController.addNewUser);

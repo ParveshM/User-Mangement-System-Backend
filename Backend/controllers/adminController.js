@@ -1,4 +1,41 @@
 const User = require("../models/userModel");
+const {
+  generateAccessToken,
+  generateRefreshToken,
+} = require("../utils/generateAccessTokens");
+const { compareHashedPassword } = require("../utils/hashing");
+
+const adminLogin = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return res.json({ success: false, message: "All fields are required" });
+    }
+    const getUser = await User.findOne({ email });
+    if (getUser.role !== "Admin") {
+      return res.json({ success: false, message: "You are not admin" });
+    }
+    if (getUser) {
+      const isPasswordMatching = await compareHashedPassword(password, getUser);
+      if (isPasswordMatching) {
+        const accessToken = generateAccessToken(getUser);
+        const refreshToken = generateRefreshToken(getUser);
+        return res.status(200).json({
+          success: true,
+          message: "Admin logged In",
+          accessToken,
+          refreshToken,
+        });
+      } else {
+        return res.json({ success: false, message: "Invalid credentials" });
+      }
+    }
+    res.json({ success: false, message: "Invalid credentials" });
+  } catch (error) {
+    console.log("error", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
 
 /*
  * Get : All users list from db
@@ -7,10 +44,13 @@ const getAllUsers = async (req, res) => {
   try {
     const users = await User.find({ role: "User" });
     if (users) {
-      res.json(users);
+      res
+        .status(200)
+        .json({ success: true, message: "Users fetched successfully", users });
     }
   } catch (error) {
     console.log("error", err);
+    res.status(500).json({ success: false, message: "Server error" });
   }
 };
 
@@ -29,7 +69,8 @@ const addNewUser = async (req, res) => {
       return res.json("User registration success");
     }
   } catch (error) {
-    return res.status(500).json("Something went wrong");
+    console.log(error);
+    res.status(500).json({ success: false, message: "Server error" });
   }
 };
 /*
@@ -68,6 +109,7 @@ const deleteUser = async (req, res) => {
   }
 };
 module.exports = {
+  adminLogin,
   getAllUsers,
   addNewUser,
   updateUser,

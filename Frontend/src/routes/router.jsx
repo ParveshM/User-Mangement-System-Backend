@@ -1,7 +1,9 @@
 import { createBrowserRouter } from "react-router-dom";
-import { Signup, Login, Home, ProfileSection } from "../pages/index";
+import { Signup, Home, ProfileSection, AdminDashboard } from "../pages/index";
 import ProtectedRoute from "./ProtectedRoutes";
 import IsNotLoggedIn from "./isNotLogged";
+import { LoginForm } from "../components";
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -31,9 +33,23 @@ const router = createBrowserRouter([
     path: "/login",
     element: (
       <IsNotLoggedIn>
-        <Login />,
+        <LoginForm url={"/login"} navigated={"/"} title={"Sign in"} />,
       </IsNotLoggedIn>
     ),
+  },
+  {
+    path: "/admin/login",
+    element: (
+      <LoginForm
+        url={"/admin/login"}
+        navigated={"/admin/dashboard"}
+        title={"Admin"}
+      />
+    ),
+  },
+  {
+    path: "/admin/dashboard",
+    element: <AdminDashboard />,
   },
 ]);
 
