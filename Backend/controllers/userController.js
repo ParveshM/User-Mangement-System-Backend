@@ -5,7 +5,7 @@ const {
   generateAccessToken,
   generateRefreshToken,
 } = require("../utils/generateAccessTokens");
-
+const path = require("path");
 /*
  * Post: User Signup
  */
@@ -47,11 +47,9 @@ const login = async (req, res) => {
       if (isPasswordMatching) {
         const accessToken = generateAccessToken(getUser);
         const refreshToken = generateRefreshToken(getUser);
-        await User.findByIdAndUpdate({ _id: getUser._id }, { refreshToken });
         return res.status(200).json({
           success: true,
           message: "User loggedIn success",
-          user: getUser,
           accessToken,
           refreshToken,
         });
@@ -102,17 +100,59 @@ const createRefreshToken = (req, res) => {
 };
 
 const getUserProfile = async (req, res) => {
-  const userId = req.params.id;
   try {
-    const isUserHaveProfile = await User.findById(userId);
+    const userId = req.user.id;
+    const isUserHaveProfile = await User.findByIdAndUpdate(userId);
     if (isUserHaveProfile) {
-      return res
-        .status(200)
-        .json({ success: true, user: isUserHaveProfile.user });
+      return res.status(200).json({
+        success: true,
+        message: " user profile found",
+        user: isUserHaveProfile,
+      });
     } else {
-      res.json({ success: false, message: "No user profile found" });
+      res.json({
+        success: false,
+        user: isUserHaveProfile,
+        message: "No user profile found",
+      });
     }
   } catch (error) {
+    console.log(error);
+    res.status(404).json({ error: "server error" });
+  }
+};
+
+const updateUserProfile = async (req, res) => {
+  try {
+    const id = req.user.id;
+    const name = req.body.name;
+    const imageUrl = req.file
+      ? path.join("/uploads", req.file?.filename)
+      : null;
+
+    const updateData = {};
+    if (name) {
+      updateData.name = name;
+    }
+    if (imageUrl) {
+      updateData.profileImgUrl = imageUrl;
+    }
+    const updateProfile = await User.findByIdAndUpdate(id, updateData, {
+      upsert: true,
+      new: true,
+    });
+    if (updateProfile) {
+      return res.status(200).json({
+        success: true,
+        message: "Profile  updated successfully",
+        user: updateProfile,
+        imageUrl: imageUrl ? imageUrl : updateProfile.profileImgUrl,
+      });
+    } else {
+      res.json({ success: false, message: "Image upload failed" });
+    }
+  } catch (error) {
+    console.log(error);
     res.status(404).json({ error: "server error" });
   }
 };
@@ -123,4 +163,5 @@ module.exports = {
   logout,
   createRefreshToken,
   getUserProfile,
+  updateUserProfile,
 };

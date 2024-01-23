@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema({
     enum: ["User", "Admin"],
     default: "User",
   },
-  refreshToken: {
+  profileImgUrl: {
     type: String,
   },
 });

@@ -9,6 +9,7 @@ function verifyUser(req, res, next) {
       if (err) {
         return res.json({ success: false, message: "Token is not valid" });
       }
+      console.log("user", user);
       req.user = user;
       next();
     });
@@ -19,9 +20,9 @@ function verifyUser(req, res, next) {
 
 // check for is the admin accessing the admin routes
 const isAdminAuth = (req, res, next) => {
-  const { accessToken } = req.cookies;
-  // if token is pressent in cookies validate the token for user details
-  if (accessToken) {
+  const authHeader = req.headers.authorization;
+  if (authHeader) {
+    const accessToken = authHeader.split(" ")[1];
     jwt.verify(accessToken, process.env.AccessTokenSecret, (err, user) => {
       if (err) {
         return res.json({ success: false, message: "Token is not valid" });

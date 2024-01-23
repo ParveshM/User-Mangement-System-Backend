@@ -7,8 +7,8 @@ import { validateLogin } from "../utils/validateLogin";
 import { BASE_URL } from "../constants";
 import { useNavigate, Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { setUser } from "../redux/Slice";
-
+import { setUser, setTokens } from "../redux/Slice";
+import { jwtDecode } from "jwt-decode";
 const LoginForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
@@ -28,10 +28,24 @@ const LoginForm = () => {
           const message = res.data.message;
           if (res.data.success) {
             showToast(message, "success");
-            dispatch(setUser(res.data));
-            // setTimeout(() => {
-            //   navigate("/");
-            // }, 1000);
+            const decoded = jwtDecode(res.data.accessToken);
+            dispatch(
+              setUser({
+                name: decoded.name,
+                id: decoded.id,
+                isAuthenticated: true,
+                isAdmin: decoded.role,
+              })
+            );
+            dispatch(
+              setTokens({
+                accessToken: res.data.accessToken,
+                refreshToken: res.data.refreshToken,
+              })
+            );
+            setTimeout(() => {
+              navigate("/");
+            }, 1000);
           } else {
             setIsSubmitting(false);
             showToast(message, "error");
@@ -44,8 +58,9 @@ const LoginForm = () => {
         });
     },
   });
+
   return (
-    <section className="relative">
+    <section className="">
       <div className="bg-primaryColor flex flex-col items-center justify-center px-6 py-8 mx-auto min-h-screen lg:py-0 ">
         <div className="w-full bg-white rounded-2xl shadow dark:border md:mt-0 sm:max-w-md xl:p-0 ">
           <div className="p-6 space-y-4  sm:p-8">
