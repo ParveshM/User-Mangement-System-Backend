@@ -7,15 +7,17 @@ const port = process.env.PORT || 8000;
 const router = require("./routers/routes");
 const connectDB = require("./config/dbconfig");
 
-var corsOptions = {
-  origin: `http://localhost:${port}`,
-  optionsSuccessStatus: 200,
-};
-app.use(cors(corsOptions));
+app.use(
+  cors({
+    origin: ["http://localhost:5173"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
 app.use(express.json());
-app.use(cookieParser());
+app.use("/uploads", express.static("uploads"));
 // user Routes
-app.use("/", router);
+app.use("/api", router);
 
 // Starting the server and database
 app.listen(port, async () => {

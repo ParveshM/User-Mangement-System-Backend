@@ -7,46 +7,37 @@ function verifyUser(req, res, next) {
     const token = authHeader.split(" ")[1];
     jwt.verify(token, process.env.AccessTokenSecret, (err, user) => {
       if (err) {
-        return res
-          .status(401)
-          .json({ success: false, message: "Token is not valid" });
+        return res.json({ success: false, message: "Token is not valid" });
       }
+      console.log("user", user);
       req.user = user;
       next();
     });
   } else {
-    res
-      .status(401)
-      .json({ success: false, message: "You are not Authenticated" });
+    res.json({ success: false, message: "You are not Authenticated" });
   }
 }
 
 // check for is the admin accessing the admin routes
 const isAdminAuth = (req, res, next) => {
-  const { accessToken } = req.cookies;
-  // if token is pressent in cookies validate the token for user details
-  if (accessToken) {
+  const authHeader = req.headers.authorization;
+  if (authHeader) {
+    const accessToken = authHeader.split(" ")[1];
     jwt.verify(accessToken, process.env.AccessTokenSecret, (err, user) => {
       if (err) {
-        return res
-          .status(401)
-          .json({ success: false, message: "Token is not valid" });
+        return res.json({ success: false, message: "Token is not valid" });
       }
       if (user && user.role === "Admin") {
         next();
       } else {
-        return res
-          .status(403)
-          .json({
-            success: false,
-            message: "You are not allowed to access this router",
-          });
+        return res.json({
+          success: false,
+          message: "You are not allowed to access this router",
+        });
       }
     });
   } else {
-    res
-      .status(401)
-      .json({ success: false, message: "You are not Authenticated" });
+    res.json({ success: false, message: "You are not Authenticated" });
   }
 };
 
