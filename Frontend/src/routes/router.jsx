@@ -3,6 +3,7 @@ import { Signup, Home, ProfileSection, AdminDashboard } from "../pages/index";
 import ProtectedRoute from "./ProtectedRoutes";
 import IsNotLoggedIn from "./isNotLogged";
 import { LoginForm } from "../components";
+import EditUser from "../pages/admin/EditUser";
 
 const router = createBrowserRouter([
   {
@@ -50,6 +51,10 @@ const router = createBrowserRouter([
   {
     path: "/admin/dashboard",
     element: <AdminDashboard />,
+  },
+  {
+    path: "/admin/edit_user/:id",
+    element: <EditUser />,
   },
 ]);
 

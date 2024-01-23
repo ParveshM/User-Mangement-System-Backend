@@ -18,7 +18,7 @@ const useUsersList = () => {
 
   useEffect(() => {
     axios
-      .get(BASE_URL + "/get_users", config)
+      .get(BASE_URL + "/admin/get_all_users", config)
       .then((res) => {
         setAllUsers(res.data.users);
         setFilteredUsers(res.data.users);

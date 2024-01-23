@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import axios from "axios";
 import { BASE_URL, IMG_BASE_URL, defaultImage } from "../constants/index";
 import { setUser } from "../redux/Slice";
 import showToast from "../utils/toaster";
 import { getAccessToken } from "../utils/tokens";
 import { Toaster } from "react-hot-toast";
+
 const Profile = () => {
-  const user = useSelector((store) => store.user);
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -40,15 +40,13 @@ const Profile = () => {
     formData.append("name", form.name);
 
     axios
-      .post(BASE_URL + "/update_profile", formData, config)
+      .put(BASE_URL + "/update_profile", formData, config)
       .then((response) => {
         const res = response.data;
         if (res.success) {
-          const imagePath = res.imageUrl;
-          const imgStr = imagePath.replace(/\\/g, "/");
           setForm({
             name: res.user.name,
-            profileImg: IMG_BASE_URL + imgStr,
+            profileImg: IMG_BASE_URL + res.imageUrl,
           });
           showToast("Profile updated successfully", "success");
           dispatch(
@@ -69,15 +67,14 @@ const Profile = () => {
 
   useEffect(() => {
     axios
-      .get(BASE_URL + `/user_profile`, config)
+      .get(BASE_URL + "/user_profile", config)
       .then((res) => {
         const response = res.data;
         if (response.success) {
-          const imagePath = response.user.profileImgUrl;
-          const imgStr = imagePath.replace(/\\/g, "/");
+          const profileImgUrl = response.user.profileImgUrl;
           setForm({
             name: response.user.name,
-            profileImg: IMG_BASE_URL + imgStr,
+            profileImg: profileImgUrl && IMG_BASE_URL + profileImgUrl,
             email: response.user.email,
           });
         } else {
@@ -85,7 +82,7 @@ const Profile = () => {
         }
       })
       .catch((err) => {
-        console.log(err);
+        console.log(err, "axios error");
       });
   }, []);
 

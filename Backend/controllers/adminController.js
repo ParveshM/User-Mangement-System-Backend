@@ -1,4 +1,5 @@
 const User = require("../models/userModel");
+const path = require("path");
 const {
   generateAccessToken,
   generateRefreshToken,
@@ -73,22 +74,61 @@ const addNewUser = async (req, res) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
+
 /*
- * Put : Update the user by id
+ * Get : Get the user by id
  */
-const updateUser = async (req, res) => {
+const getUser = async (req, res) => {
   const userId = req.params.id;
-  const { name } = req.body;
   try {
-    const updateUserName = await User.findByIdAndUpdate(userId, { name });
-    if (updateUserName) {
-      return res.status(200).json(`User name updated successfully`);
+    const getUser = await User.findById(userId);
+    if (getUser) {
+      return res
+        .status(200)
+        .json({ success: true, message: `User found`, user: getUser });
     } else {
-      res.json("User not found");
+      res.json({ success: false, message: "User not found" });
     }
   } catch (error) {
     console.log("error", error);
     return res.status(500).json("Something went wrong");
+  }
+};
+/*
+ * Put : Update the user by id
+ */
+const updateUser = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const name = req.body.name;
+    const imageUrl = req.file
+      ? path.join("/uploads", req.file?.filename)
+      : null;
+
+    const updateData = {};
+    if (name) {
+      updateData.name = name;
+    }
+    if (imageUrl) {
+      updateData.profileImgUrl = imageUrl;
+    }
+    const updateProfile = await User.findByIdAndUpdate(id, updateData, {
+      upsert: true,
+      new: true,
+    });
+    if (updateProfile) {
+      return res.status(200).json({
+        success: true,
+        message: "Profile  updated successfully",
+        user: updateProfile,
+        imageUrl: imageUrl ? imageUrl : updateProfile.profileImgUrl,
+      });
+    } else {
+      res.json({ success: false, message: "Profile update failed" });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(404).json({ error: "server error" });
   }
 };
 /*
@@ -112,6 +152,7 @@ module.exports = {
   adminLogin,
   getAllUsers,
   addNewUser,
+  getUser,
   updateUser,
   deleteUser,
 };

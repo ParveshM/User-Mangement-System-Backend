@@ -1,7 +1,9 @@
+import { useSelector } from "react-redux";
 const Navbar = ({ searchInput, onSearch }) => {
+  const user = useSelector((store) => store.user);
   return (
     <nav className="bg-primaryColor p-3 flex justify-between">
-      <div className="text-white font-bold hidden md:block">Admin Name</div>
+      <div className="text-white font-bold hidden md:block">{user.name}🕴🏻</div>
       <div className="text-white font-bold text-xl hidden md:block">
         Admin Dashboard
       </div>
