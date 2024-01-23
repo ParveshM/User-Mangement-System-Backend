@@ -1,26 +1,39 @@
 import { createBrowserRouter } from "react-router-dom";
 import { Signup, Login, Home, ProfileSection } from "../pages/index";
-
+import ProtectedRoute from "./ProtectedRoutes";
+import IsNotLoggedIn from "./isNotLogged";
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Home />,
+    element: (
+      <ProtectedRoute>
+        <Home />,
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/profile",
-    element: <ProfileSection />,
+    element: (
+      <ProtectedRoute>
+        <ProfileSection />,
+      </ProtectedRoute>
+    ),
   },
-  // {
-  //   path: "/admin",
-  //   element: <Home />,
-  // },
   {
     path: "/signup",
-    element: <Signup />,
+    element: (
+      <IsNotLoggedIn>
+        <Signup />,
+      </IsNotLoggedIn>
+    ),
   },
   {
     path: "/login",
-    element: <Login />,
+    element: (
+      <IsNotLoggedIn>
+        <Login />,
+      </IsNotLoggedIn>
+    ),
   },
 ]);
 
