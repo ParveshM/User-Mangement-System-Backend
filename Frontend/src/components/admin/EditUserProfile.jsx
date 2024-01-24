@@ -1,19 +1,17 @@
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
 import axios from "axios";
-import { BASE_URL, IMG_BASE_URL, defaultImage } from "../constants/index";
-import { setUser } from "../redux/Slice";
-import showToast from "../utils/toaster";
-import { getAccessToken } from "../utils/tokens";
-import { Toaster } from "react-hot-toast";
+import { BASE_URL, IMG_BASE_URL, defaultImage } from "../../constants/index";
+import showToast from "../../utils/toaster";
+import { getAccessToken } from "../../utils/tokens";
+import { useNavigate } from "react-router-dom";
 
-const Profile = () => {
+const EditUserProfile = ({ id }) => {
+  const navigate = useNavigate();
   const [form, setForm] = useState({
     name: "",
     email: "",
     profileImg: null,
   });
-  const dispatch = useDispatch();
   const accessToken = getAccessToken();
   const config = {
     headers: {
@@ -40,23 +38,18 @@ const Profile = () => {
     formData.append("name", form.name);
 
     axios
-      .put(BASE_URL + "/update_profile", formData, config)
+      .put(BASE_URL + "/admin/update_user/" + id, formData, config)
       .then((response) => {
         const res = response.data;
         if (res.success) {
           setForm({
             name: res.user.name,
-            profileImg: IMG_BASE_URL + res.imageUrl,
+            profileImg: res.imageUrl && IMG_BASE_URL + res.imageUrl,
           });
           showToast("Profile updated successfully", "success");
-          dispatch(
-            setUser({
-              name: res.user.name,
-              id: res.user._id,
-              isAuthenticated: true,
-              role: res.user.role,
-            })
-          );
+          setTimeout(() => {
+            navigate("/admin/dashboard");
+          }, 500);
         }
       })
       .catch((err) => {
@@ -67,7 +60,7 @@ const Profile = () => {
 
   useEffect(() => {
     axios
-      .get(BASE_URL + "/user_profile", config)
+      .get(BASE_URL + "/admin/get_user/" + id, config)
       .then((res) => {
         const response = res.data;
         if (response.success) {
@@ -78,7 +71,8 @@ const Profile = () => {
             email: response.user.email,
           });
         } else {
-          console.log(response.message);
+          navigate("/admin/dashboard");
+          showToast(response.message, "error");
         }
       })
       .catch((err) => {
@@ -138,11 +132,10 @@ const Profile = () => {
               Update Profile
             </button>
           </form>
-          <Toaster />
         </div>
       </div>
     </div>
   );
 };
 
-export default Profile;
+export default EditUserProfile;

@@ -6,10 +6,10 @@ const Home = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     dispatch(clearUser());
     dispatch(clearTokens());
-    navigate("/login");
+    navigate("/login", { replace: true });
   };
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">

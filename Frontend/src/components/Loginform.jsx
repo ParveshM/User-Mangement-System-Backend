@@ -9,7 +9,8 @@ import { useNavigate, Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setUser, setTokens } from "../redux/Slice";
 import { jwtDecode } from "jwt-decode";
-const LoginForm = () => {
+
+const LoginForm = ({ url, navigated, title }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -23,7 +24,7 @@ const LoginForm = () => {
     onSubmit: (values) => {
       setIsSubmitting(true);
       axios
-        .post(BASE_URL + "/login", values)
+        .post(BASE_URL + url, values)
         .then((res) => {
           const message = res.data.message;
           if (res.data.success) {
@@ -44,7 +45,7 @@ const LoginForm = () => {
               })
             );
             setTimeout(() => {
-              navigate("/");
+              navigate(navigated);
             }, 1000);
           } else {
             setIsSubmitting(false);
@@ -65,7 +66,7 @@ const LoginForm = () => {
         <div className="w-full bg-white rounded-2xl shadow dark:border md:mt-0 sm:max-w-md xl:p-0 ">
           <div className="p-6 space-y-4  sm:p-8">
             <h1 className="text-xl font-bold leading-tight tracking-tight text-headerText md:text-2xl">
-              Welcome Back! Sign in
+              Welcome Back! {title}
             </h1>
             <form className="space-y-4" onSubmit={formik.handleSubmit}>
               <div>
@@ -118,16 +119,17 @@ const LoginForm = () => {
               >
                 Sign in
               </button>
-
-              <p className="text-sm  text-black text-center">
-                Don’t have an account yet?
-                <Link
-                  to={"/signup"}
-                  className="font-medium text-[#3E7A8E] hover:underline pl-1"
-                >
-                  Sign up
-                </Link>
-              </p>
+              {title !== "Admin" && (
+                <p className="text-sm  text-black text-center">
+                  Don’t have an account yet?
+                  <Link
+                    to={"/signup"}
+                    className="font-medium text-[#3E7A8E] hover:underline pl-1"
+                  >
+                    Sign up
+                  </Link>
+                </p>
+              )}
             </form>
             <Toaster />
           </div>

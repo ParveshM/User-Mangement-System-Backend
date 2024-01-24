@@ -49,7 +49,7 @@ const login = async (req, res) => {
         const refreshToken = generateRefreshToken(getUser);
         return res.status(200).json({
           success: true,
-          message: "User loggedIn success",
+          message: "User loggedIn ",
           accessToken,
           refreshToken,
         });
@@ -149,7 +149,7 @@ const updateUserProfile = async (req, res) => {
         imageUrl: imageUrl ? imageUrl : updateProfile.profileImgUrl,
       });
     } else {
-      res.json({ success: false, message: "Image upload failed" });
+      res.json({ success: false, message: "Profile update failed" });
     }
   } catch (error) {
     console.log(error);

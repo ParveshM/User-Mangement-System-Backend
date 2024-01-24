@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { jwtDecode } from "jwt-decode";
 const storedUser = localStorage.getItem("user");
 const UserSlice = createSlice({
   name: "user",
@@ -26,7 +25,7 @@ const UserSlice = createSlice({
       localStorage.removeItem("refreshToken");
     },
     clearUser: (state) => {
-      state.user = null;
+      state.name = null;
       state.id = null;
       state.isAuthenticated = null;
       state.role = null;
