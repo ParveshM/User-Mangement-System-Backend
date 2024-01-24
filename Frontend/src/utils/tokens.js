@@ -1,4 +1,8 @@
 function getAccessToken() {
   return localStorage.getItem("accessToken");
 }
-export { getAccessToken };
+function getRefreshToken() {
+  return localStorage.getItem("refreshToken");
+}
+
+export { getAccessToken, getRefreshToken };

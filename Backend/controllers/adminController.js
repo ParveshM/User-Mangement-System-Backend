@@ -16,6 +16,7 @@ const adminLogin = async (req, res) => {
     if (getUser.role !== "Admin") {
       return res.json({ success: false, message: "You are not admin" });
     }
+    console.log(getUser, "admin login");
     if (getUser) {
       const isPasswordMatching = await compareHashedPassword(password, getUser);
       if (isPasswordMatching) {

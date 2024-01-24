@@ -7,7 +7,7 @@ import showToast from "../../utils/toaster";
 import Modal from "./Modal";
 import axios from "axios";
 import { getAccessToken } from "../../utils/tokens";
-
+import axiosJWT from "../../utils/AxiosService";
 const UserList = ({ name, email, profileImgUrl, _id, removeUser }) => {
   const [isOpen, setIsOpen] = useState(false);
   const handleCancel = () => {
@@ -22,7 +22,7 @@ const UserList = ({ name, email, profileImgUrl, _id, removeUser }) => {
     withCredentials: true,
   };
   const handleOk = () => {
-    axios
+    axiosJWT
       .delete(BASE_URL + "/admin/delete_user" + `/${_id}`, config)
       .then((res) => {
         showToast(res.data, "success");

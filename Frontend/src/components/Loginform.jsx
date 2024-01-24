@@ -17,7 +17,6 @@ const LoginForm = ({ url, navigated, title }) => {
   const dispatch = useDispatch();
 
   const handleToggle = () => {
-    console.log("clie");
     setShowPassword(!showPassword);
   };
 
@@ -36,7 +35,6 @@ const LoginForm = ({ url, navigated, title }) => {
           if (res.data.success) {
             showToast(message, "success");
             const decoded = jwtDecode(res.data.accessToken);
-
             dispatch(
               setUser({
                 name: decoded.name,

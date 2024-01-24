@@ -13,6 +13,7 @@ import { getAccessToken } from "../utils/tokens";
 import { Toaster } from "react-hot-toast";
 import { FaArrowLeft } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import axiosJWT from "../utils/AxiosService";
 
 const Profile = () => {
   const [form, setForm] = useState({
@@ -60,7 +61,7 @@ const Profile = () => {
     formData.append("image", e.target.elements.profileImg.files[0]);
     formData.append("name", form.name);
 
-    axios
+    axiosJWT
       .put(BASE_URL + "/update_profile", formData, config)
       .then((response) => {
         const res = response.data;
@@ -87,7 +88,7 @@ const Profile = () => {
   };
 
   useEffect(() => {
-    axios
+    axiosJWT
       .get(BASE_URL + "/user_profile", config)
       .then((res) => {
         const response = res.data;
