@@ -7,7 +7,8 @@ import { Link } from "react-router-dom";
 const AdminDashboard = () => {
   const searchInput = useRef();
   //   get users from custom hook
-  const { allUsers, filteredUsers, setFilteredUsers } = useUsersList();
+  const { allUsers, setAllUsers, filteredUsers, setFilteredUsers } =
+    useUsersList();
 
   const onSearch = (e) => {
     if (e.keyCode === 13) {
@@ -20,7 +21,9 @@ const AdminDashboard = () => {
     const newUsers = filteredUsers.filter((user) => {
       return user._id !== id;
     });
+    console.log(newUsers);
     setFilteredUsers(newUsers);
+    setAllUsers(newUsers);
   };
 
   return (

@@ -25,8 +25,7 @@ const UserList = ({ name, email, profileImgUrl, _id, removeUser }) => {
     axios
       .delete(BASE_URL + "/admin/delete_user" + `/${_id}`, config)
       .then((res) => {
-        console.log(res);
-        showToast(res, "success");
+        showToast(res.data, "success");
         removeUser(_id);
       })
       .catch((err) => {

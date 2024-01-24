@@ -6,6 +6,7 @@ import {
   AdminDashboard,
   EditUser,
   AddUser,
+  ErrorPage,
 } from "../pages/index";
 import ProtectedRoute from "./ProtectedRoutes";
 import IsNotLoggedIn from "./isNotLogged";
@@ -20,6 +21,7 @@ const router = createBrowserRouter([
         <Home />,
       </ProtectedRoute>
     ),
+    errorElement: <ErrorPage />,
   },
   {
     path: "/profile",

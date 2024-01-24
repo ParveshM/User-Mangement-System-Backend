@@ -36,7 +36,7 @@ const LoginForm = ({ url, navigated, title }) => {
           if (res.data.success) {
             showToast(message, "success");
             const decoded = jwtDecode(res.data.accessToken);
-            console.log(decoded.role);
+
             dispatch(
               setUser({
                 name: decoded.name,
