@@ -1,11 +1,18 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import axios from "axios";
-import { BASE_URL, IMG_BASE_URL, defaultImage } from "../constants/index";
+import {
+  BASE_URL,
+  IMG_BASE_URL,
+  defaultImage,
+  nameRegex,
+} from "../constants/index";
 import { setUser } from "../redux/Slice";
 import showToast from "../utils/toaster";
 import { getAccessToken } from "../utils/tokens";
 import { Toaster } from "react-hot-toast";
+import { FaArrowLeft } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
   const [form, setForm] = useState({
@@ -13,6 +20,8 @@ const Profile = () => {
     email: "",
     profileImg: null,
   });
+  const navigate = useNavigate();
+  const [validationError, setValidationError] = useState(null);
   const dispatch = useDispatch();
   const accessToken = getAccessToken();
   const config = {
@@ -24,17 +33,29 @@ const Profile = () => {
   };
 
   const handleChange = (e) => {
-    if (e.target.name === "profileImg") {
+    const { name, value } = e.target;
+    if (name === "profileImg") {
       setForm({
         ...form,
-        [e.target.name]: URL.createObjectURL(e.target.files[0]),
+        [name]: URL.createObjectURL(e.target.files[0]),
       });
     } else {
-      setForm({ ...form, [e.target.name]: e.target.value });
+      setForm({ ...form, [name]: value });
+      if (value.trim() === "") {
+        setValidationError("Name is required");
+      } else if (!nameRegex.test(value)) {
+        setValidationError("First letter should be capital", "error");
+      } else {
+        setValidationError(null);
+      }
     }
   };
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (validationError) {
+      showToast(validationError, "error");
+      return;
+    }
     const formData = new FormData();
     formData.append("image", e.target.elements.profileImg.files[0]);
     formData.append("name", form.name);
@@ -89,6 +110,7 @@ const Profile = () => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="max-w-md p-8 mx-5 bg-white border border-gray-200 rounded-lg shadow-lg">
+        <FaArrowLeft onClick={() => navigate(-1)} className="cursor-pointer " />
         <div className="flex flex-col items-center">
           <label className="block mb-2 text-xl font-bold text-gray-800">
             Profile Section

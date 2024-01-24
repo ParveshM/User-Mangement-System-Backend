@@ -6,11 +6,14 @@ import showToast from "../utils/toaster";
 import axios from "axios";
 import { BASE_URL } from "../constants";
 import { useNavigate, Link } from "react-router-dom";
-
+import { IoEye, IoEyeOffSharp } from "react-icons/io5";
 const SignupForm = ({ navigateTo, title }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-
+  const handleToggle = () => {
+    setShowPassword(!showPassword);
+  };
   const formik = useFormik({
     initialValues: {
       name: "",
@@ -90,7 +93,7 @@ const SignupForm = ({ navigateTo, title }) => {
               {formik.touched.email && formik.errors.email ? (
                 <div className="text-red-600">{formik.errors.email}</div>
               ) : null}
-              <div>
+              <div className="relative">
                 <label
                   htmlFor="password"
                   className="block mb-2 text-sm font-medium text-secondaryColor"
@@ -98,7 +101,7 @@ const SignupForm = ({ navigateTo, title }) => {
                   Password
                 </label>
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   name="password"
                   id="password"
                   placeholder="••••••••"
@@ -106,6 +109,12 @@ const SignupForm = ({ navigateTo, title }) => {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                 />
+                <div
+                  className="absolute top-1/2 right-2 transform -translate-y-1/2 cursor-pointer "
+                  onClick={handleToggle}
+                >
+                  {showPassword ? <IoEye /> : <IoEyeOffSharp />}
+                </div>
               </div>
               {formik.touched.password && formik.errors.password ? (
                 <div className="text-red-600">{formik.errors.password}</div>

@@ -9,16 +9,22 @@ import { useNavigate, Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setUser, setTokens } from "../redux/Slice";
 import { jwtDecode } from "jwt-decode";
-
+import { IoEye, IoEyeOffSharp } from "react-icons/io5";
 const LoginForm = ({ url, navigated, title }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const handleToggle = () => {
+    console.log("clie");
+    setShowPassword(!showPassword);
+  };
+
   const formik = useFormik({
     initialValues: {
-      email: "amal@gmail.com",
-      password: "Amal@123",
+      email: "",
+      password: "",
     },
     validate: validateLogin,
     onSubmit: (values) => {
@@ -30,12 +36,13 @@ const LoginForm = ({ url, navigated, title }) => {
           if (res.data.success) {
             showToast(message, "success");
             const decoded = jwtDecode(res.data.accessToken);
+
             dispatch(
               setUser({
                 name: decoded.name,
                 id: decoded.id,
                 isAuthenticated: true,
-                isAdmin: decoded.role,
+                isAdmin: decoded.role === "Admin",
               })
             );
             dispatch(
@@ -81,7 +88,7 @@ const LoginForm = ({ url, navigated, title }) => {
                   name="email"
                   id="email"
                   value={formik.values.email}
-                  placeholder="jhondoe@gmail.com"
+                  placeholder="johndoe@gmail.com"
                   className=" border-b-2 border-b-inputBorderColor text-gray-900 outline-none sm:text-sm  focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 "
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
@@ -90,7 +97,7 @@ const LoginForm = ({ url, navigated, title }) => {
               {formik.touched.email && formik.errors.email ? (
                 <div className="text-red-600">{formik.errors.email}</div>
               ) : null}
-              <div>
+              <div className="relative">
                 <label
                   htmlFor="password"
                   className="block mb-2 text-sm font-medium text-secondaryColor"
@@ -98,7 +105,7 @@ const LoginForm = ({ url, navigated, title }) => {
                   Password
                 </label>
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   name="password"
                   id="password"
                   placeholder="••••••••"
@@ -107,6 +114,12 @@ const LoginForm = ({ url, navigated, title }) => {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                 />
+                <div
+                  className="absolute top-1/2 right-2 transform -translate-y-1/2 cursor-pointer "
+                  onClick={handleToggle}
+                >
+                  {showPassword ? <IoEye /> : <IoEyeOffSharp />}
+                </div>
               </div>
               {formik.touched.password && formik.errors.password ? (
                 <div className="text-red-600">{formik.errors.password}</div>

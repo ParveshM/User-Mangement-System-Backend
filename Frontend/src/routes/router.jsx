@@ -6,10 +6,12 @@ import {
   AdminDashboard,
   EditUser,
   AddUser,
+  ErrorPage,
 } from "../pages/index";
 import ProtectedRoute from "./ProtectedRoutes";
 import IsNotLoggedIn from "./isNotLogged";
 import { LoginForm } from "../components";
+import AdminRoute from "./AdminRoute";
 
 const router = createBrowserRouter([
   {
@@ -19,6 +21,7 @@ const router = createBrowserRouter([
         <Home />,
       </ProtectedRoute>
     ),
+    errorElement: <ErrorPage />,
   },
   {
     path: "/profile",
@@ -56,15 +59,27 @@ const router = createBrowserRouter([
   },
   {
     path: "/admin/dashboard",
-    element: <AdminDashboard />,
+    element: (
+      <AdminRoute>
+        <AdminDashboard />
+      </AdminRoute>
+    ),
   },
   {
     path: "/admin/edit_user/:id",
-    element: <EditUser />,
+    element: (
+      <AdminRoute>
+        <EditUser />
+      </AdminRoute>
+    ),
   },
   {
     path: "/admin/add_new_user",
-    element: <AddUser />,
+    element: (
+      <AdminRoute>
+        <AddUser />
+      </AdminRoute>
+    ),
   },
 ]);
 

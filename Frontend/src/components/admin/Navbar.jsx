@@ -18,7 +18,7 @@ const Navbar = ({ searchInput, onSearch }) => {
       <div className="text-white font-bold text-xl hidden md:block">
         Admin Dashboard
       </div>
-      <div className="flex items-center">
+      <div className="flex md:items-center max-md:mx-auto ">
         <input
           type="search"
           placeholder="Search..."

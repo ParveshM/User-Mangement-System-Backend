@@ -5,6 +5,7 @@ import ProfileSection from "./ProfileSection";
 import AdminDashboard from "./admin/AdminDashboard";
 import AddUser from "./admin/AddUser";
 import EditUser from "./admin/EditUser";
+import ErrorPage from "./ErrorPage";
 export {
   Login,
   Signup,
@@ -13,4 +14,5 @@ export {
   AdminDashboard,
   AddUser,
   EditUser,
+  ErrorPage,
 };
