@@ -1,9 +1,39 @@
 import { MdDelete } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
-import { IMG_BASE_URL, defaultImage } from "../../constants";
+import { BASE_URL, IMG_BASE_URL, defaultImage } from "../../constants";
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import showToast from "../../utils/toaster";
+import Modal from "./Modal";
+import axios from "axios";
+import { getAccessToken } from "../../utils/tokens";
 
-const UserList = ({ name, email, profileImgUrl, _id }) => {
+const UserList = ({ name, email, profileImgUrl, _id, removeUser }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const handleCancel = () => {
+    setIsOpen(false);
+  };
+  const accessToken = getAccessToken();
+  const config = {
+    headers: {
+      Authorization: "Bearer " + accessToken,
+      "Content-Type": "multipart/form-data",
+    },
+    withCredentials: true,
+  };
+  const handleOk = () => {
+    axios
+      .delete(BASE_URL + "/admin/delete_user" + `/${_id}`, config)
+      .then((res) => {
+        console.log(res);
+        showToast(res, "success");
+        removeUser(_id);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    setIsOpen(false);
+  };
   return (
     <div className="bg-white rounded p-3 shadow-md relative">
       <div className="flex items-center mb-2">
@@ -26,10 +56,11 @@ const UserList = ({ name, email, profileImgUrl, _id }) => {
             <FaEdit size={20} />
           </button>
         </Link>
-        <button className="text-red-500">
+        <button className="text-red-500" onClick={() => setIsOpen(true)}>
           <MdDelete size={20} />
         </button>
       </div>
+      {isOpen && <Modal handleCancel={handleCancel} handleOk={handleOk} />}
     </div>
   );
 };

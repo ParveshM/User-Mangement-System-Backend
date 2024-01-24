@@ -3,4 +3,14 @@ import Signup from "./Signup";
 import Home from "./Home";
 import ProfileSection from "./ProfileSection";
 import AdminDashboard from "./admin/AdminDashboard";
-export { Login, Signup, Home, ProfileSection, AdminDashboard };
+import AddUser from "./admin/AddUser";
+import EditUser from "./admin/EditUser";
+export {
+  Login,
+  Signup,
+  Home,
+  ProfileSection,
+  AdminDashboard,
+  AddUser,
+  EditUser,
+};

@@ -28,6 +28,6 @@ const useUsersList = () => {
       });
   }, []);
 
-  return { allUsers, filteredUsers, setFilteredUsers };
+  return { allUsers, filteredUsers, setAllUsers, setFilteredUsers };
 };
 export default useUsersList;

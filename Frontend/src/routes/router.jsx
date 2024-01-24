@@ -1,9 +1,15 @@
 import { createBrowserRouter } from "react-router-dom";
-import { Signup, Home, ProfileSection, AdminDashboard } from "../pages/index";
+import {
+  Signup,
+  Home,
+  ProfileSection,
+  AdminDashboard,
+  EditUser,
+  AddUser,
+} from "../pages/index";
 import ProtectedRoute from "./ProtectedRoutes";
 import IsNotLoggedIn from "./isNotLogged";
 import { LoginForm } from "../components";
-import EditUser from "../pages/admin/EditUser";
 
 const router = createBrowserRouter([
   {
@@ -55,6 +61,10 @@ const router = createBrowserRouter([
   {
     path: "/admin/edit_user/:id",
     element: <EditUser />,
+  },
+  {
+    path: "/admin/add_new_user",
+    element: <AddUser />,
   },
 ]);
 

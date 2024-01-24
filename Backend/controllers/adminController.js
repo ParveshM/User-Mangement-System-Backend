@@ -141,7 +141,7 @@ const deleteUser = async (req, res) => {
     if (deleteUser) {
       return res.json("User Deleted successfully");
     } else {
-      res.status(404).json("Delete user failed");
+      res.json("Delete user failed");
     }
   } catch (error) {
     console.log("error", err);

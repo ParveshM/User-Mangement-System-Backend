@@ -6,7 +6,8 @@ import showToast from "../utils/toaster";
 import axios from "axios";
 import { BASE_URL } from "../constants";
 import { useNavigate, Link } from "react-router-dom";
-const SignupForm = () => {
+
+const SignupForm = ({ navigateTo, title }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
@@ -27,9 +28,7 @@ const SignupForm = () => {
           if (res.data.success) {
             showToast(message, "success");
             setTimeout(() => {
-              console.log("signup form");
-
-              navigate("/login");
+              navigate(navigateTo);
             }, 1000);
           } else {
             showToast(message, "error");
@@ -49,7 +48,7 @@ const SignupForm = () => {
         <div className="w-full bg-white rounded-2xl shadow dark:border md:mt-0 sm:max-w-md xl:p-0 ">
           <div className="p-6 space-y-4  sm:p-8">
             <h1 className="text-xl font-bold leading-tight tracking-tight text-headerText md:text-2xl">
-              Sign Up to your account
+              {title}
             </h1>
             <form className="space-y-4" onSubmit={formik.handleSubmit}>
               <div>
@@ -137,16 +136,17 @@ const SignupForm = () => {
               >
                 Register
               </button>
-
-              <p className="text-sm  text-black text-center">
-                Already have an account ?
-                <Link
-                  to={"/login"}
-                  className="font-medium text-[#3E7A8E] hover:underline pl-1"
-                >
-                  Sign in
-                </Link>
-              </p>
+              {title === " Sign Up to your account" && (
+                <p className="text-sm  text-black text-center">
+                  Already have an account ?
+                  <Link
+                    to={"/login"}
+                    className="font-medium text-[#3E7A8E] hover:underline pl-1"
+                  >
+                    Sign in
+                  </Link>
+                </p>
+              )}
             </form>
             <Toaster />
           </div>
