@@ -76,9 +76,9 @@ const logout = (req, res) => {
  */
 const createRefreshToken = (req, res) => {
   try {
-    const { refreshToken } = req.cookies;
+    const { refreshToken } = req.body;
     if (!refreshToken) {
-      return res.json({ success: false, message: "you are not authenticated" });
+      return res.json({ success: false, message: "No refresh token recieved" });
     }
     jwt.verify(refreshToken, process.env.RefreshTokenSecret, (err, user) => {
       err && console.log("Error", err);
@@ -88,7 +88,7 @@ const createRefreshToken = (req, res) => {
 
       return res.status(200).json({
         success: true,
-        message: "Refresh token stored successfully",
+        message: "Refresh token created successfully",
         accessToken: newAccessToken,
         refreshToken: newRefreshToken,
       });

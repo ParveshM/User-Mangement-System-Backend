@@ -23,7 +23,7 @@ router.put(
 /*
  * Refresh token
  */
-router.get("/refresh_token", verifyUser, userController.createRefreshToken);
+router.post("/refresh_token", userController.createRefreshToken);
 
 /*
  * admin user management routes
