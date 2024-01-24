@@ -5,6 +5,7 @@ import showToast from "../../utils/toaster";
 import { getAccessToken } from "../../utils/tokens";
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
+import axiosJWT from "../../utils/AxiosService";
 const EditUserProfile = ({ id }) => {
   const navigate = useNavigate();
   const [form, setForm] = useState({
@@ -37,7 +38,7 @@ const EditUserProfile = ({ id }) => {
     formData.append("image", e.target.elements.profileImg.files[0]);
     formData.append("name", form.name);
 
-    axios
+    axiosJWT
       .put(BASE_URL + "/admin/update_user/" + id, formData, config)
       .then((response) => {
         const res = response.data;
@@ -59,7 +60,7 @@ const EditUserProfile = ({ id }) => {
   };
 
   useEffect(() => {
-    axios
+    axiosJWT
       .get(BASE_URL + "/admin/get_user/" + id, config)
       .then((res) => {
         const response = res.data;

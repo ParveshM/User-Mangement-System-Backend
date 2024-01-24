@@ -12,6 +12,7 @@ import ProtectedRoute from "./ProtectedRoutes";
 import IsNotLoggedIn from "./isNotLogged";
 import { LoginForm } from "../components";
 import AdminRoute from "./AdminRoute";
+import { lazy } from "react";
 
 const router = createBrowserRouter([
   {

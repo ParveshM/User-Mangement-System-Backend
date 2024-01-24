@@ -1,5 +1,6 @@
 const User = require("../models/userModel");
 const jwt = require("jsonwebtoken");
+const { promisify } = require("util");
 const { compareHashedPassword } = require("../utils/hashing");
 const {
   generateAccessToken,
@@ -74,24 +75,32 @@ const logout = (req, res) => {
 /*
  * Post: create refresh token
  */
-const createRefreshToken = (req, res) => {
+const verifyAsync = promisify(jwt.verify);
+const createRefreshToken = async (req, res) => {
   try {
     const { refreshToken } = req.body;
-    if (!refreshToken) {
-      return res.json({ success: false, message: "No refresh token recieved" });
+
+    const decoded = await verifyAsync(
+      refreshToken,
+      process.env.RefreshTokenSecret
+    );
+
+    const getUser = await User.findById(decoded.id);
+
+    if (!getUser) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
     }
-    jwt.verify(refreshToken, process.env.RefreshTokenSecret, (err, user) => {
-      err && console.log("Error", err);
 
-      const newAccessToken = generateAccessToken(user);
-      const newRefreshToken = generateRefreshToken(user);
+    const newAccessToken = generateAccessToken(getUser);
+    const newRefreshToken = generateRefreshToken(getUser);
 
-      return res.status(200).json({
-        success: true,
-        message: "Refresh token created successfully",
-        accessToken: newAccessToken,
-        refreshToken: newRefreshToken,
-      });
+    return res.status(200).json({
+      success: true,
+      message: "Refresh token created successfully",
+      accessToken: newAccessToken,
+      refreshToken: newRefreshToken,
     });
   } catch (error) {
     console.log("error", error);
