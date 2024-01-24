@@ -3,7 +3,9 @@ import { Navigate } from "react-router-dom";
 
 const AdminRoute = ({ children }) => {
   const user = useSelector((store) => store.user);
-
+  // if(!user.isAuthenticated && user.isAdmin){
+  //   return <Navigate to={}
+  // }
   if (!user.isAdmin) {
     return <Navigate to={"/"} replace />;
   }

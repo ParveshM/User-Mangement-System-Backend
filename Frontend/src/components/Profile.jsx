@@ -11,6 +11,8 @@ import { setUser } from "../redux/Slice";
 import showToast from "../utils/toaster";
 import { getAccessToken } from "../utils/tokens";
 import { Toaster } from "react-hot-toast";
+import { FaArrowLeft } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
   const [form, setForm] = useState({
@@ -18,6 +20,7 @@ const Profile = () => {
     email: "",
     profileImg: null,
   });
+  const navigate = useNavigate();
   const [validationError, setValidationError] = useState(null);
   const dispatch = useDispatch();
   const accessToken = getAccessToken();
@@ -107,6 +110,7 @@ const Profile = () => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="max-w-md p-8 mx-5 bg-white border border-gray-200 rounded-lg shadow-lg">
+        <FaArrowLeft onClick={() => navigate(-1)} className="cursor-pointer " />
         <div className="flex flex-col items-center">
           <label className="block mb-2 text-xl font-bold text-gray-800">
             Profile Section

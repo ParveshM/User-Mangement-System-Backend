@@ -4,7 +4,7 @@ import { BASE_URL, IMG_BASE_URL, defaultImage } from "../../constants/index";
 import showToast from "../../utils/toaster";
 import { getAccessToken } from "../../utils/tokens";
 import { useNavigate } from "react-router-dom";
-
+import { FaArrowLeft } from "react-icons/fa";
 const EditUserProfile = ({ id }) => {
   const navigate = useNavigate();
   const [form, setForm] = useState({
@@ -83,6 +83,7 @@ const EditUserProfile = ({ id }) => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="max-w-md p-8 mx-5 bg-white border border-gray-200 rounded-lg shadow-lg">
+        <FaArrowLeft onClick={() => navigate(-1)} className="cursor-pointer" />
         <div className="flex flex-col items-center">
           <label className="block mb-2 text-xl font-bold text-gray-800">
             Profile Section
